@@ -55,15 +55,18 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# ── Environment Variables ──────────────────────────────────────
+# ── Environment Variables (IMPORTANT!) ─────────────────────────
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 .env.*.local
+**/.env
+**/.env.local
 
 # ── IDEs ───────────────────────────────────────────────────────
+.vscode/
 .vscode/settings.json
 .idea/
 *.swp
@@ -96,3 +99,17 @@ tmp/
 temp/
 *.tmp
 *.bak
+
+# ── Private / Sensitive Files ──────────────────────────────────
+PLAN.md
+NOTES.md
+TODO.md
+.env.example
+docs/private/
+docs/internal/
+research/private/
+
+# ── API Keys & Credentials ─────────────────────────────────────
+*_api_key.txt
+*_secret.txt
+credentials.json
