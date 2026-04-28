@@ -1,0 +1,12 @@
+{
+  "name": "web-ui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Add your dev command here'",
+    "build": "echo 'Add your build command here'",
+    "lint": "eslint ."
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

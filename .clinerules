@@ -1,0 +1,90 @@
+# CodeAgent - Optimized Context Loading
+
+## 🎯 Project Mission
+Build open-source autonomous coding agent (Jules/Cursor alternative)
+- Self-hostable, privacy-first
+- Multi-model (Claude/Gemini/GPT-4/Local)
+- Asynchronous execution (works while you sleep)
+
+## 📚 Context Loading Strategy
+Load ONLY what's needed for current task to save tokens:
+
+**Working on Python backend?**
+→ Read `.clinerules.d/python-standards.md`
+
+**Working on TypeScript/React frontend?**
+→ Read `.clinerules.d/typescript-standards.md`
+
+**Architecture or design questions?**
+→ Read `.clinerules.d/architecture.md`
+
+**Security features?**
+→ Read `.clinerules.d/security.md`
+
+**Package-specific work?**
+→ Read `packages/[package-name]/CONTEXT.md`
+
+## 🛠️ Tech Stack (Quick Reference)
+
+**Backend:**
+- Python 3.12+
+- FastAPI (API framework)
+- LangGraph (agent orchestration)
+- Anthropic Claude Sonnet 4 (primary AI)
+- Google Gemini Flash (speed tasks)
+
+**Frontend:**
+- Next.js 15 (App Router)
+- React 19
+- TypeScript (strict mode)
+- Tailwind CSS
+- Shadcn/UI components
+
+**Infrastructure:**
+- Docker (code execution sandbox)
+- Supabase (PostgreSQL + Auth)
+- Redis (caching + queues)
+- BullMQ (background jobs)
+
+## 📁 Project Structure
+packages/
+├── agent-core/     # Python FastAPI backend
+├── web-ui/         # Next.js frontend
+└── worker/         # Background job processor
+
+## ⚡ Quick Rules (Always Apply)
+
+**Python:**
+- Type hints required: `def func(x: str) -> dict:`
+- Async for I/O: `async def fetch_data():`
+- Docstrings: `"""What this does."""`
+- Tests: 80%+ coverage
+
+**TypeScript:**
+- Strict mode enabled
+- Interface for props: `interface Props { title: string }`
+- Functional components only
+- Tailwind for styling
+
+**General:**
+- Files < 200 lines (split if larger)
+- Commit daily (minimum 1 commit)
+- Build in public (tweet progress)
+- Ship > Perfect
+
+## 🚫 Don't Auto-Load (Unless Explicitly Asked)
+- Test files
+- Documentation files
+- node_modules/
+- venv/
+- Lock files
+
+## 📖 When in Doubt
+1. Ask: "What's the simplest version?"
+2. Check relevant `.clinerules.d/*.md` file
+3. Read package's `CONTEXT.md`
+4. Ship it (even if imperfect)
+
+---
+
+**Remember: Context-specific rules override these general rules.**
