@@ -1,11 +1,15 @@
 import logging
+import secrets
 from typing import Literal, Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Cookie, HTTPException, Response
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 
 from core.agent import Agent
 from core.executor import CodeExecutor, DockerUnavailableError
+from core.github_manager import GitHubManager
+from core.oauth_manager import GitHubOAuthManager
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +31,89 @@ def get_executor() -> CodeExecutor:
     if _executor is None:
         _executor = CodeExecutor()
     return _executor
+
+
+oauth_manager = GitHubOAuthManager()
+
+# Store state tokens temporarily (in production, use Redis)
+pending_states = {}
+
+
+@router.get("/auth/github")
+async def github_auth():
+    """
+    Initiate GitHub OAuth flow.
+
+    Returns:
+        Redirect to GitHub authorization page
+    """
+    state = secrets.token_urlsafe(32)
+    pending_states[state] = True
+    auth_url = oauth_manager.get_authorization_url(state)
+    return RedirectResponse(url=auth_url)
+
+
+@router.get("/auth/github/callback")
+async def github_callback(code: str, state: str, response: Response):
+    """
+    Handle GitHub OAuth callback.
+
+    Args:
+        code: Authorization code from GitHub
+        state: State token for CSRF protection
+        response: FastAPI response object
+
+    Returns:
+        Redirect to frontend with session token
+    """
+    if state not in pending_states:
+        logger.warning(f"Invalid state token: {state}")
+        return RedirectResponse(url="http://localhost:3000?error=invalid_state")
+
+    del pending_states[state]
+
+    access_token = await oauth_manager.exchange_code_for_token(code)
+    if not access_token:
+        logger.error("Failed to get access token")
+        return RedirectResponse(url="http://localhost:3000?error=auth_failed")
+
+    user_data = await oauth_manager.get_github_user(access_token)
+    if not user_data:
+        logger.error("Failed to get user data")
+        return RedirectResponse(url="http://localhost:3000?error=user_data_failed")
+
+    session_token = oauth_manager.create_session_token(access_token, user_data)
+    redirect_url = (
+        f"http://localhost:3000?github_connected=true"
+        f"&session_token={session_token}"
+        f"&github_user={user_data['login']}"
+    )
+    return RedirectResponse(url=redirect_url)
+
+
+@router.get("/auth/github/status")
+async def github_status(session_token: Optional[str] = Cookie(default=None)):
+    """
+    Check GitHub connection status.
+
+    Args:
+        session_token: Session token from cookie
+
+    Returns:
+        Connection status and user info
+    """
+    if not session_token:
+        return {"connected": False, "user": None}
+
+    payload = oauth_manager.decode_session_token(session_token)
+    if not payload:
+        return {"connected": False, "user": None}
+
+    return {
+        "connected": True,
+        "user": payload.get("github_user"),
+        "github_id": payload.get("github_id"),
+    }
 
 
 class GenerateRequest(BaseModel):
@@ -98,6 +185,41 @@ async def execute(req: ExecuteRequest) -> ExecuteResponse:
         output=result["output"] if result["output"] else None,
         error=result["error"],
         exit_code=result["exit_code"],
+    )
+
+
+class CreatePRRequest(BaseModel):
+    session_token: str
+    repo_url: str
+    file_path: str
+    code: str
+    commit_message: str
+    branch_name: str
+    pr_title: str
+    pr_body: Optional[str] = ""
+
+
+@router.post("/create-pr")
+async def create_pull_request(request: CreatePRRequest):
+    """Create GitHub PR using stored OAuth token."""
+    payload = oauth_manager.decode_session_token(request.session_token)
+    if not payload:
+        return {"success": False, "error": "Invalid or expired session"}
+
+    github_token = payload.get("github_token")
+    github_manager = GitHubManager(github_token)
+
+    if not github_manager.validate_token():
+        return {"success": False, "error": "GitHub token invalid"}
+
+    return await github_manager.create_pull_request(
+        repo_url=request.repo_url,
+        file_path=request.file_path,
+        code=request.code,
+        commit_message=request.commit_message,
+        branch_name=request.branch_name,
+        pr_title=request.pr_title,
+        pr_body=request.pr_body
     )
 
 
