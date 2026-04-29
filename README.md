@@ -1,61 +1,46 @@
-# 🤖 CodeAgent - Open Source Autonomous Coding Agent
+# 🤖 CodeAgent
 
-**The self-hostable alternative to Google Jules and Cursor.**
+**An open-source autonomous coding agent for developers**
 
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/codeagent?style=social)](https://github.com/yourusername/codeagent)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 > ⚠️ **Early Development**: This project is in active development. Star & watch for updates!
 
 ---
 
-## 🎯 Why CodeAgent?
+## 🎯 What is CodeAgent?
 
-**Google Jules** and **Cursor** (recently valued at $60B by SpaceX) are amazing, but they have fundamental limitations:
+CodeAgent is an autonomous coding assistant that helps developers by:
 
-❌ Closed source (black box algorithms)  
-❌ Vendor lock-in (Google/Anthropic only)  
-❌ Privacy concerns (your code on their servers)  
-❌ Expensive ($20-125/month)
+- **Generating code** from natural language descriptions
+- **Running tests** automatically in isolated environments
+- **Creating pull requests** with the generated code
+- **Working asynchronously** so you can focus on other tasks
 
-**CodeAgent solves this:**
-
-✅ **100% Open Source** - Audit every line of code  
-✅ **Self-Hostable** - Run on your infrastructure  
-✅ **Multi-Model** - Use Claude, Gemini, GPT-4, or local models  
-✅ **Privacy First** - Your code never leaves your servers  
-✅ **Free Forever** - Self-host at zero cost
+Built with modern AI and designed to be **self-hostable** and **privacy-first**.
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-### Current (MVP - Week 1)
-- ✅ Autonomous code generation (Python, TypeScript)
+### Current Features
+- ✅ AI-powered code generation (Python, TypeScript, JavaScript)
+- ✅ Secure code execution in Docker containers
 - ✅ GitHub integration (clone, commit, create PR)
-- ✅ Docker sandbox execution (secure, isolated)
-- ✅ Multi-model support (Claude/Gemini/GPT-4)
+- ✅ Web interface for task management
 - ✅ Real-time progress tracking
-- ✅ Web UI (task submission + monitoring)
 
-### Coming Soon (Week 2-4)
-- 🚧 Self-correction loops (agent debugs its own code)
-- 🚧 Test generation & execution
-- 🚧 Multi-file project generation
-- 🚧 Team collaboration features
+### Planned Features
+- 🚧 Multi-language support (Rust, Go, Java)
+- 🚧 Self-correction (agent debugs its own code)
+- 🚧 Test generation
 - 🚧 VS Code extension
-- 🚧 CLI tool
-
-### Roadmap (Week 5-12)
-- 📅 Advanced scheduling (cron-like automation)
-- 📅 Plugin system (extend with custom tools)
-- 📅 Enterprise features (SSO, audit logs)
-- 📅 Mobile app
+- 🚧 Team collaboration features
 
 ---
 
-## 📦 Quick Start
+## 🚀 Quick Start
 
 ### Option 1: Docker Compose (Recommended)
 
@@ -65,18 +50,17 @@ git clone https://github.com/yourusername/codeagent.git
 cd codeagent
 
 # Copy environment file
-cp .env.example .env
+cp packages/agent-core/.env.example packages/agent-core/.env
 
 # Add your API keys to .env
-# ANTHROPIC_API_KEY=sk-ant-...
-# GOOGLE_API_KEY=...
+# ANTHROPIC_API_KEY=your_key_here
 
 # Start all services
 docker-compose up -d
 
 # Open in browser
 # Web UI: http://localhost:3000
-# API: http://localhost:8000/docs
+# API docs: http://localhost:8000/docs
 ```
 
 ### Option 2: Manual Setup
@@ -89,7 +73,7 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python main.py
 
-# Frontend (Node.js)
+# Frontend (Node.js) - in another terminal
 cd packages/web-ui
 npm install
 npm run dev
@@ -97,17 +81,152 @@ npm run dev
 
 ---
 
-## 🎨 Screenshots
+## 🏗️ Architecture
 
-### Dashboard
-![Dashboard](https://via.placeholder.com/800x400?text=Dashboard+Screenshot)
-
-### Code Generation
-![Code Generation](https://via.placeholder.com/800x400?text=Code+Generation+Screenshot)
-
-### Real-time Progress
-![Progress](https://via.placeholder.com/800x400?text=Progress+Screenshot)
+┌─────────────────────────────────────────┐
+│         Web UI (Next.js)                │
+│   Task submission & monitoring          │
+└──────────────┬──────────────────────────┘
+│
+┌──────────────▼──────────────────────────┐
+│       Agent API (FastAPI)               │
+│   - Task management                     │
+│   - AI model integration                │
+│   - GitHub operations                   │
+└──────────────┬──────────────────────────┘
+│
+┌──────────────▼──────────────────────────┐
+│    Agent Engine (LangGraph)             │
+│   Plan → Code → Test → Review           │
+└──────────────┬──────────────────────────┘
+│
+┌──────────────▼──────────────────────────┐
+│   Docker Sandbox                        │
+│   Secure code execution                 │
+└─────────────────────────────────────────┘
 
 ---
 
-## 🏗️ Architecture
+## 🛠️ Tech Stack
+
+**Backend:**
+- Python 3.12+
+- FastAPI (API framework)
+- LangGraph (agent orchestration)
+- Anthropic Claude / Google Gemini / OpenAI GPT-4
+
+**Frontend:**
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS
+
+**Infrastructure:**
+- Docker (code execution sandbox)
+- PostgreSQL (via Supabase)
+- Redis (caching & queues)
+
+---
+
+## 📖 Documentation
+
+- [Getting Started](docs/getting-started.md) *(coming soon)*
+- [API Reference](docs/api.md) *(coming soon)*
+- [Architecture](docs/architecture.md) *(coming soon)*
+- [Contributing](CONTRIBUTING.md) *(coming soon)*
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Development Guidelines
+
+- Follow the coding standards in `.clinerules.d/`
+- Write tests for new features (80%+ coverage)
+- Update documentation as needed
+- Keep commits atomic and well-described
+
+---
+
+## 🐛 Bug Reports & Feature Requests
+
+- **Found a bug?** [Open an issue](https://github.com/yourusername/codeagent/issues/new)
+- **Have an idea?** [Start a discussion](https://github.com/yourusername/codeagent/discussions)
+
+---
+
+## 📊 Project Status
+
+This project is in **active development**. Check the [Issues](https://github.com/yourusername/codeagent/issues) page for current tasks and roadmap.
+
+| Component | Status |
+|-----------|--------|
+| Core API | 🚧 In Progress |
+| Web UI | 🚧 In Progress |
+| Docker Executor | 🚧 In Progress |
+| GitHub Integration | 📅 Planned |
+| VS Code Extension | 📅 Planned |
+
+---
+
+## 🔐 Security
+
+CodeAgent takes security seriously:
+
+- **Sandboxed execution** - All code runs in isolated Docker containers
+- **No network access** - Generated code can't make external calls
+- **Resource limits** - CPU and memory constraints prevent abuse
+- **Input validation** - All user inputs are sanitized
+
+Found a security issue? Please email: security@yourdomain.com (or create a private security advisory)
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+**What this means:**
+- ✅ Use commercially
+- ✅ Modify freely  
+- ✅ Distribute
+- ✅ Private use
+
+---
+
+## 🙏 Acknowledgments
+
+Built with great tools from the open-source community:
+
+- [FastAPI](https://fastapi.tiangolo.com/) - Modern Python web framework
+- [LangGraph](https://github.com/langchain-ai/langgraph) - Agent orchestration
+- [Next.js](https://nextjs.org/) - React framework
+- [Supabase](https://supabase.com/) - Open-source Firebase alternative
+
+---
+
+## 📞 Contact
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/yourusername/codeagent/issues)
+- **Discussions**: [Ask questions or share ideas](https://github.com/yourusername/codeagent/discussions)
+- **Email**: your.email@example.com
+
+---
+
+## ⭐ Star History
+
+If you find this project useful, please consider giving it a star!
+
+[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/codeagent&type=Date)](https://star-history.com/#yourusername/codeagent&Date)
+
+---
+
+**Built with ❤️ by developers, for developers.**

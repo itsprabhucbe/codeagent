@@ -1,0 +1,20 @@
+# Development Plan
+
+This project follows an agile development approach.
+
+## Current Sprint (Week 1)
+
+### Goals
+- [ ] Set up FastAPI backend
+- [ ] Create basic web UI
+- [ ] Implement Docker sandbox
+- [ ] Add GitHub integration
+
+### Next Steps
+- [ ] Multi-model support
+- [ ] Test generation
+- [ ] Real-time updates
+
+---
+
+For detailed planning, see the Issues and Projects tabs on GitHub.
